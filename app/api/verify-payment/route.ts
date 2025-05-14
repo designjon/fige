@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { markSpinnerAsSold } from '@/app/lib/db';
+import { markSpinnerAsSold, getSoldSpinners } from '@/app/lib/db';
 import Stripe from 'stripe';
 
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -12,26 +12,59 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 export async function POST(req: NextRequest) {
   try {
+    console.log('Verifying payment...');
     const { sessionId } = await req.json();
+    console.log('Session ID:', sessionId);
     
     // Retrieve the session directly using the session ID
     const session = await stripe.checkout.sessions.retrieve(sessionId);
+    console.log('Retrieved session:', {
+      id: session.id,
+      status: session.status,
+      metadata: session.metadata,
+      customerEmail: session.customer_details?.email
+    });
+
     const customerEmail = session.customer_details?.email;
     const spinnerNumber = session.metadata?.spinnerNumber;
 
-    if (spinnerNumber) {
-      console.log('Marking spinner as sold:', spinnerNumber);
-      await markSpinnerAsSold(spinnerNumber);
+    if (!spinnerNumber) {
+      console.error('No spinner number in session metadata');
+      return NextResponse.json(
+        { error: 'No spinner number found' },
+        { status: 400 }
+      );
     }
 
+    // Check current state before marking as sold
+    const currentSoldSpinners = await getSoldSpinners();
+    console.log('Current sold spinners before update:', currentSoldSpinners);
+
+    console.log('Marking spinner as sold:', spinnerNumber);
+    await markSpinnerAsSold(spinnerNumber);
+
+    // Verify the update
+    const updatedSoldSpinners = await getSoldSpinners();
+    console.log('Updated sold spinners after marking as sold:', updatedSoldSpinners);
+
+    if (!updatedSoldSpinners.includes(spinnerNumber)) {
+      console.error('Failed to mark spinner as sold - not found in updated list');
+      return NextResponse.json(
+        { error: 'Failed to mark spinner as sold' },
+        { status: 500 }
+      );
+    }
+
+    console.log('Successfully marked spinner as sold and verified');
     return NextResponse.json({ 
       spinnerNumber,
-      email: customerEmail 
+      email: customerEmail,
+      success: true
     });
   } catch (error) {
     console.error('Error verifying payment:', error);
     return NextResponse.json(
-      { error: 'Error verifying payment' },
+      { error: error instanceof Error ? error.message : 'Error verifying payment' },
       { status: 400 }
     );
   }
