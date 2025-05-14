@@ -14,6 +14,9 @@ importers:
       '@stripe/stripe-js':
         specifier: ^2.4.0
         version: 2.4.0
+      '@upstash/redis':
+        specifier: ^1.34.9
+        version: 1.34.9
       '@vercel/kv':
         specifier: ^3.0.0
         version: 3.0.0
