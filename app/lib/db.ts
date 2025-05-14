@@ -23,7 +23,7 @@ export async function getSoldSpinners(): Promise<string[]> {
     const spinnerNumbers = [];
     for (const key of keys) {
       const exists = await redis.exists(key);
-      if (exists) {
+      if (exists === 1) { // Redis exists returns 1 if key exists, 0 if not
         const spinnerNumber = key.replace(SOLD_SPINNER_KEY_PREFIX, '');
         spinnerNumbers.push(spinnerNumber);
       }
@@ -44,7 +44,7 @@ export async function markSpinnerAsSold(spinnerNumber: string): Promise<void> {
     
     // Check if already sold
     const exists = await redis.exists(key);
-    if (exists) {
+    if (exists === 1) {
       console.log('Spinner already marked as sold:', spinnerNumber);
       return;
     }
@@ -55,7 +55,7 @@ export async function markSpinnerAsSold(spinnerNumber: string): Promise<void> {
     
     // Verify the update
     const isSold = await redis.exists(key);
-    if (!isSold) {
+    if (isSold !== 1) {
       throw new Error('Failed to verify spinner was marked as sold');
     }
   } catch (error) {
@@ -69,8 +69,9 @@ export async function isSpinnerSold(spinnerNumber: string): Promise<boolean> {
     console.log('Checking if spinner is sold:', spinnerNumber);
     const key = `${SOLD_SPINNER_KEY_PREFIX}${spinnerNumber}`;
     const exists = await redis.exists(key);
-    console.log('Spinner sold status:', { spinnerNumber, isSold: exists === 1 });
-    return exists === 1;
+    const isSold = exists === 1;
+    console.log('Spinner sold status:', { spinnerNumber, isSold });
+    return isSold;
   } catch (error) {
     console.error('Error checking if spinner is sold:', error);
     return false;
