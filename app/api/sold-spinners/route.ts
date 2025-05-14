@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getSoldSpinners } from '@/app/lib/db';
+import { revalidatePath } from 'next/cache';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET() {
   try {
@@ -7,14 +11,14 @@ export async function GET() {
     const soldSpinners = await getSoldSpinners();
     console.log('Sold spinners from API:', soldSpinners);
     
-    // Return response with no-cache headers
+    // Revalidate the home page
+    revalidatePath('/');
+    
     return new NextResponse(JSON.stringify(soldSpinners), {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0',
+        'Cache-Control': 'no-store, must-revalidate',
       },
     });
   } catch (error) {
@@ -23,9 +27,7 @@ export async function GET() {
       status: 500,
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0',
+        'Cache-Control': 'no-store, must-revalidate',
       },
     });
   }

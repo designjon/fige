@@ -9,7 +9,7 @@ interface SpinnerProps {
     id: number;
     number: string;
     image: string;
-    price: number;
+    price?: number;
   };
   isSold: boolean;
 }
@@ -114,7 +114,9 @@ export default function SpinnerItem({ spinner, isSold: initialIsSold }: SpinnerP
             </p>
           ) : (
             <>
-              <p className="text-white font-medium mb-4">${spinner.price}</p>
+              {spinner.price && (
+                <p className="text-white font-medium mb-4">${spinner.price}</p>
+              )}
               {error && !isSold && (
                 <p className="text-red-500 text-sm mb-2">{error}</p>
               )}
