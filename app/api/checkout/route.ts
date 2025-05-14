@@ -78,6 +78,7 @@ export async function POST(request: Request) {
         spinnerId,
         spinnerNumber,
       },
+      allow_promotion_codes: true,
     });
 
     if (!session.url) {
