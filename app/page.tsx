@@ -24,10 +24,10 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/70" />
         
         {/* Content Overlay */}
-        <div className="relative z-10 h-full flex flex-col items-center justify-center -mt-32 max-w-[1000px] mx-auto px-4">
+        <div className="relative z-10 h-full flex flex-col items-center justify-center -mt-16 sm:-mt-32 max-w-[1000px] mx-auto px-4">
           <ScrollReveal>
             <div className="flex flex-col items-center">
-              <div className="relative w-48 h-48 mb-8">
+              <div className="relative w-32 h-32 sm:w-48 sm:h-48 -mt-16 sm:mt-0 mb-24">
                 <Image
                   src="/F_Coin.png"
                   alt="Figé Coin"
