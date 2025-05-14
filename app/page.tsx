@@ -36,10 +36,10 @@ export default function Home() {
                   priority
                 />
               </div>
-              <h1 className={`text-[#AB9768] text-6xl font-bold mb-4 ${playfair.className}`}>
+              <h1 className={`text-[#AB9768] text-4xl sm:text-6xl font-bold mb-4 ${playfair.className}`}>
                 Figé
               </h1>
-              <p className="text-white text-xl mb-8">
+              <p className="text-white text-lg sm:text-xl mb-8 text-center">
                 Elevate Your Focus. Command Your Presence.
               </p>
               <Link
@@ -57,12 +57,12 @@ export default function Home() {
       <section className="pt-[85px] pb-32 px-4 sm:px-6 lg:px-8 bg-[#1a1f24]">
         <div className="max-w-[1000px] mx-auto">
           <ScrollReveal>
-            <h2 className={`text-5xl text-center mb-16 ${playfair.className}`}>
+            <h2 className={`text-3xl sm:text-5xl text-center mb-8 sm:mb-16 ${playfair.className}`}>
               The Art of Precision
             </h2>
           </ScrollReveal>
           <ScrollReveal>
-            <p className="text-lg text-gray-300 text-center mx-auto mb-16 leading-relaxed">
+            <p className="text-base sm:text-lg text-gray-300 text-center mx-auto mb-8 sm:mb-16 leading-relaxed">
               Born from years of relentless refinement, Figé is the pinnacle of focus tool design. 
               Its fidgetability knows no bounds—the crisp snap of brass ball bearings clicking into place, 
               the play between asymmetric spins and balanced whirls, the satisfying feel of a perfect 
@@ -93,7 +93,7 @@ export default function Home() {
       <section className="pt-[85px] pb-32 px-4 sm:px-6 lg:px-8 bg-black">
         <div className="max-w-[1000px] mx-auto">
           <ScrollReveal>
-            <h2 className={`text-5xl text-center mb-16 ${playfair.className}`}>
+            <h2 className={`text-3xl sm:text-5xl text-center mb-8 sm:mb-16 ${playfair.className}`}>
               About the Creator
             </h2>
           </ScrollReveal>
@@ -114,10 +114,10 @@ export default function Home() {
             <div className="md:col-span-7">
               <ScrollReveal>
                 <div className="flex flex-col gap-6 py-4">
-                  <h3 className="text-3xl font-medium">
+                  <h3 className="text-2xl sm:text-3xl font-medium">
                     Crafted by a Design Executive
                   </h3>
-                  <p className="text-lg text-gray-300 leading-relaxed">
+                  <p className="text-base sm:text-lg text-gray-300 leading-relaxed">
                     Years in the making and refined through thousands of iterations, each Figé spinner is hand-assembled in Jon's home studio—where design, engineering, and elegance converge. Limited to just five numbered pieces, each one is individually etched and comes with a signed certificate of authenticity.
                   </p>
                   <a 
@@ -139,7 +139,7 @@ export default function Home() {
       <section className="pt-[85px] pb-32 px-4 sm:px-6 lg:px-8 bg-[#1a1f24]">
         <div className="max-w-[1000px] mx-auto">
           <ScrollReveal>
-            <h2 className={`text-5xl text-center mb-16 ${playfair.className}`}>
+            <h2 className={`text-3xl sm:text-5xl text-center mb-8 sm:mb-16 ${playfair.className}`}>
               Materials & Craftsmanship
             </h2>
           </ScrollReveal>
@@ -147,13 +147,13 @@ export default function Home() {
             <div className="md:col-span-7">
               <ScrollReveal>
                 <div className="flex flex-col gap-6 py-4">
-                  <p className="text-3xl font-medium text-gray-300 leading-relaxed">
+                  <p className="text-2xl sm:text-3xl font-medium text-gray-300 leading-relaxed">
                     Every detail matters.
                   </p>
-                  <p className="text-lg text-gray-300 leading-relaxed">
+                  <p className="text-base sm:text-lg text-gray-300 leading-relaxed">
                     Crafted from carbon fiber–filled PETG, the spinner is strong, subtly glossy, and beautifully grained. Brass inlays and ball bearings give it a nostalgic, weighty balance, while premium R188 bearings ensure smooth, quiet, and long-lasting performance.
                   </p>
-                  <p className="text-lg text-gray-300 leading-relaxed">
+                  <p className="text-base sm:text-lg text-gray-300 leading-relaxed">
                     This is functional sculpture for your desk.
                   </p>
                 </div>
@@ -180,12 +180,12 @@ export default function Home() {
       <section className="pt-[85px] pb-32 px-4 sm:px-6 lg:px-8 bg-black">
         <div className="max-w-[1000px] mx-auto">
           <ScrollReveal>
-            <h2 className={`text-5xl text-center mb-16 ${playfair.className}`}>
+            <h2 className={`text-3xl sm:text-5xl text-center mb-8 sm:mb-16 ${playfair.className}`}>
               A Tactile Anchor for Executive Presence
             </h2>
           </ScrollReveal>
           <ScrollReveal>
-            <p className="text-lg text-gray-300 text-center mx-auto mb-16 leading-relaxed max-w-[800px]">
+            <p className="text-base sm:text-lg text-gray-300 text-center mx-auto mb-8 sm:mb-16 leading-relaxed max-w-[800px]">
               In high-pressure moments, Figé becomes your discreet tool for clarity. It calms nerves, sharpens focus, 
               and anchors attention. Precision you can feel. Presence you can command.
             </p>
@@ -209,12 +209,12 @@ export default function Home() {
         <div className="max-w-[1000px] mx-auto">
           <ScrollReveal>
             <div>
-              <div className="w-full h-px bg-white/20 mb-12" />
+              <div className="w-full h-px bg-white/20 mb-8 sm:mb-12" />
               
-              <h2 className={`text-5xl text-center mb-8 ${playfair.className}`}>
+              <h2 className={`text-3xl sm:text-5xl text-center mb-6 sm:mb-8 ${playfair.className}`}>
                 Lifetime Assurance
               </h2>
-              <p className="text-lg text-gray-300 text-center mx-auto mb-12 leading-relaxed max-w-[1000px]">
+              <p className="text-base sm:text-lg text-gray-300 text-center mx-auto mb-8 sm:mb-12 leading-relaxed max-w-[1000px]">
                 Figé is built to last. If it ever breaks, we'll replace it—no questions asked. This is our lifetime guarantee.
               </p>
               
@@ -228,7 +228,7 @@ export default function Home() {
       <section id="pre-order" className="pt-[85px] pb-24 px-4 sm:px-6 lg:px-8 bg-black">
         <div className="max-w-[1000px] mx-auto text-center">
           <ScrollReveal>
-            <h2 className={`text-5xl text-center mb-16 ${playfair.className}`}>
+            <h2 className={`text-3xl sm:text-5xl text-center mb-8 sm:mb-16 ${playfair.className}`}>
               Secure Your Exclusive Unit
             </h2>
           </ScrollReveal>
