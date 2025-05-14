@@ -1,103 +1,244 @@
-import Image from "next/image";
+import SpinnerGrid from './components/SpinnerGrid';
+import ScrollReveal from './components/ScrollReveal';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Playfair_Display } from 'next/font/google';
+
+const playfair = Playfair_Display({ subsets: ['latin'] });
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <main className="min-h-screen bg-gradient-to-b from-[#0c0c0c] to-[#1a1a1a] text-white">
+      {/* Video Hero Section */}
+      <section className="relative h-screen w-full overflow-hidden">
+        {/* Background Video */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="/SpinDark.mov" type="video/mp4" />
+        </video>
+        
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-black/70" />
+        
+        {/* Content Overlay */}
+        <div className="relative z-10 h-full flex flex-col items-center justify-center -mt-32 max-w-[1000px] mx-auto px-4">
+          <ScrollReveal>
+            <div className="flex flex-col items-center">
+              <div className="relative w-48 h-48 mb-8">
+                <Image
+                  src="/F_Coin.png"
+                  alt="Figé Coin"
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
+              <h1 className={`text-[#AB9768] text-6xl font-bold mb-4 ${playfair.className}`}>
+                Figé
+              </h1>
+              <p className="text-white text-xl mb-8">
+                Elevate Your Focus. Command Your Presence.
+              </p>
+              <Link
+                href="#pre-order"
+                className="border border-[#AB9768] text-[#AB9768] px-8 py-3 rounded-full hover:bg-[#AB9768] hover:text-black transition-all duration-300"
+              >
+                Exclusive Access
+              </Link>
+            </div>
+          </ScrollReveal>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </section>
+
+      {/* Art of Precision Section */}
+      <section className="pt-[85px] pb-32 px-4 sm:px-6 lg:px-8 bg-[#1a1f24]">
+        <div className="max-w-[1000px] mx-auto">
+          <ScrollReveal>
+            <h2 className={`text-5xl text-center mb-16 ${playfair.className}`}>
+              The Art of Precision
+            </h2>
+          </ScrollReveal>
+          <ScrollReveal>
+            <p className="text-lg text-gray-300 text-center mx-auto mb-16 leading-relaxed">
+              Born from years of relentless refinement, Figé is the pinnacle of focus tool design. 
+              Its fidgetability knows no bounds—the crisp snap of brass ball bearings clicking into place, 
+              the play between asymmetric spins and balanced whirls, the satisfying feel of a perfect 
+              flick beneath your fingers. This is more than a spinner. It is a meditation on motion 
+              and a testament to craft.
+            </p>
+          </ScrollReveal>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {['/Hero.jpg', '/Spinning.jpg', '/Snapping.jpg'].map((src, index) => (
+              <div key={src}>
+                <ScrollReveal>
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+                    <Image
+                      src={src}
+                      alt={`Figé Spinner ${index === 0 ? 'Hero Shot' : index === 1 ? 'in Motion' : 'Close-up'}`}
+                      fill
+                      className="object-cover transition-transform duration-700 hover:scale-110"
+                    />
+                  </div>
+                </ScrollReveal>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* About the Creator Section */}
+      <section className="pt-[85px] pb-32 px-4 sm:px-6 lg:px-8 bg-black">
+        <div className="max-w-[1000px] mx-auto">
+          <ScrollReveal>
+            <h2 className={`text-5xl text-center mb-16 ${playfair.className}`}>
+              About the Creator
+            </h2>
+          </ScrollReveal>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
+            <div className="md:col-span-5">
+              <ScrollReveal>
+                <div className="relative aspect-square w-full overflow-hidden rounded-2xl">
+                  <Image
+                    src="/JonF.jpg"
+                    alt="Jon Friedman"
+                    fill
+                    className="object-cover transition-transform duration-700 hover:scale-110"
+                    priority
+                  />
+                </div>
+              </ScrollReveal>
+            </div>
+            <div className="md:col-span-7">
+              <ScrollReveal>
+                <div className="flex flex-col gap-6 py-4">
+                  <h3 className="text-3xl font-medium">
+                    Crafted by a Design Executive
+                  </h3>
+                  <p className="text-lg text-gray-300 leading-relaxed">
+                    Years in the making and refined through thousands of iterations, each Figé spinner is hand-assembled in Jon's home studio—where design, engineering, and elegance converge. Limited to just five numbered pieces, each one is individually etched and comes with a signed certificate of authenticity.
+                  </p>
+                  <a 
+                    href="https://www.linkedin.com/in/designjon/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#AB9768] hover:text-white transition-colors duration-300"
+                  >
+                    Learn more about Jon
+                  </a>
+                </div>
+              </ScrollReveal>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Materials & Craftsmanship Section */}
+      <section className="pt-[85px] pb-32 px-4 sm:px-6 lg:px-8 bg-[#1a1f24]">
+        <div className="max-w-[1000px] mx-auto">
+          <ScrollReveal>
+            <h2 className={`text-5xl text-center mb-16 ${playfair.className}`}>
+              Materials & Craftsmanship
+            </h2>
+          </ScrollReveal>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
+            <div className="md:col-span-7">
+              <ScrollReveal>
+                <div className="flex flex-col gap-6 py-4">
+                  <p className="text-3xl font-medium text-gray-300 leading-relaxed">
+                    Every detail matters.
+                  </p>
+                  <p className="text-lg text-gray-300 leading-relaxed">
+                    Crafted from carbon fiber–filled PETG, the spinner is strong, subtly glossy, and beautifully grained. Brass inlays and ball bearings give it a nostalgic, weighty balance, while premium R188 bearings ensure smooth, quiet, and long-lasting performance.
+                  </p>
+                  <p className="text-lg text-gray-300 leading-relaxed">
+                    This is functional sculpture for your desk.
+                  </p>
+                </div>
+              </ScrollReveal>
+            </div>
+            <div className="md:col-span-5">
+              <ScrollReveal>
+                <div className="relative aspect-square w-full overflow-hidden rounded-2xl">
+                  <Image
+                    src="/Workbench.jpg"
+                    alt="Figé Spinner Craftsmanship"
+                    fill
+                    className="object-cover transition-transform duration-700 hover:scale-110"
+                    priority
+                  />
+                </div>
+              </ScrollReveal>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Executive Presence Section */}
+      <section className="pt-[85px] pb-32 px-4 sm:px-6 lg:px-8 bg-black">
+        <div className="max-w-[1000px] mx-auto">
+          <ScrollReveal>
+            <h2 className={`text-5xl text-center mb-16 ${playfair.className}`}>
+              A Tactile Anchor for Executive Presence
+            </h2>
+          </ScrollReveal>
+          <ScrollReveal>
+            <p className="text-lg text-gray-300 text-center mx-auto mb-16 leading-relaxed max-w-[800px]">
+              In high-pressure moments, Figé becomes your discreet tool for clarity. It calms nerves, sharpens focus, 
+              and anchors attention. Precision you can feel. Presence you can command.
+            </p>
+          </ScrollReveal>
+          <ScrollReveal>
+            <div className="relative aspect-[16/9] w-full max-w-[800px] mx-auto overflow-hidden rounded-2xl">
+              <Image
+                src="/Executive.png"
+                alt="Executive with Figé Spinner"
+                fill
+                className="object-cover transition-transform duration-700 hover:scale-110"
+                priority
+              />
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Lifetime Assurance Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[#1a1f24] relative">
+        <div className="max-w-[1000px] mx-auto">
+          <ScrollReveal>
+            <div>
+              <div className="w-full h-px bg-white/20 mb-12" />
+              
+              <h2 className={`text-5xl text-center mb-8 ${playfair.className}`}>
+                Lifetime Assurance
+              </h2>
+              <p className="text-lg text-gray-300 text-center mx-auto mb-12 leading-relaxed max-w-[1000px]">
+                Figé is built to last. If it ever breaks, we'll replace it—no questions asked. This is our lifetime guarantee.
+              </p>
+              
+              <div className="w-full h-px bg-white/20" />
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Pre-order Section */}
+      <section id="pre-order" className="pt-[85px] pb-24 px-4 sm:px-6 lg:px-8 bg-black">
+        <div className="max-w-[1000px] mx-auto text-center">
+          <ScrollReveal>
+            <h2 className={`text-5xl text-center mb-16 ${playfair.className}`}>
+              Secure Your Exclusive Unit
+            </h2>
+          </ScrollReveal>
+          <ScrollReveal>
+            <SpinnerGrid />
+          </ScrollReveal>
+        </div>
+      </section>
+    </main>
   );
 }
