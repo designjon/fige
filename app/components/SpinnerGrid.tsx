@@ -10,31 +10,31 @@ const spinners = [
     id: 1,
     number: '01',
     image: '/01.png',
-    price: 500,
+    price: 799,
   },
   {
     id: 2,
     number: '02',
     image: '/02.png',
-    price: 500,
+    price: 699,
   },
   {
     id: 3,
     number: '03',
     image: '/03.png',
-    price: 500,
+    price: 599,
   },
   {
     id: 4,
     number: '04',
     image: '/04.png',
-    price: 500,
+    price: 499,
   },
   {
     id: 5,
     number: '05',
     image: '/05.png',
-    price: 500,
+    price: 499,
   },
 ];
 
