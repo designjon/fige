@@ -7,17 +7,22 @@ if (!process.env.STRIPE_SECRET_KEY) {
 }
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2023-10-16',
+  apiVersion: '2023-10-16' as any,
 });
 
 export async function POST(request: Request) {
   try {
+    console.log('Received checkout request');
+    
     const body = await request.json();
+    console.log('Request body:', body);
+    
     const { spinnerId, spinnerNumber, price } = body;
 
     console.log('Environment variables:', {
       NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
-      NODE_ENV: process.env.NODE_ENV
+      NODE_ENV: process.env.NODE_ENV,
+      STRIPE_KEY_SET: !!process.env.STRIPE_SECRET_KEY
     });
 
     if (!process.env.NEXT_PUBLIC_BASE_URL) {
@@ -25,8 +30,10 @@ export async function POST(request: Request) {
     }
 
     // Check if spinner is already sold
+    console.log('Checking if spinner is sold:', spinnerNumber);
     const isSold = await isSpinnerSold(spinnerNumber);
     if (isSold) {
+      console.log('Spinner already sold:', spinnerNumber);
       return NextResponse.json(
         { error: 'Spinner already sold' },
         { status: 400 }
@@ -36,6 +43,7 @@ export async function POST(request: Request) {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL.replace(/\/$/, '');
     console.log('Base URL:', baseUrl);
 
+    console.log('Creating Stripe checkout session');
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -61,14 +69,19 @@ export async function POST(request: Request) {
     });
 
     if (!session.url) {
+      console.error('No checkout URL in session:', session);
       throw new Error('No checkout URL returned from Stripe');
     }
 
+    console.log('Checkout session created successfully');
     return NextResponse.json({ url: session.url });
   } catch (error) {
     console.error('Error creating checkout session:', error);
+    // Log the full error object for debugging
+    console.error('Full error:', JSON.stringify(error, null, 2));
+    
     return NextResponse.json(
-      { error: 'Error creating checkout session' },
+      { error: error instanceof Error ? error.message : 'Error creating checkout session' },
       { status: 500 }
     );
   }

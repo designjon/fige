@@ -16,11 +16,14 @@ interface SpinnerProps {
 
 export default function SpinnerItem({ spinner, isSold }: SpinnerProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [isHovered, setIsHovered] = useState(false);
 
   const handlePreOrder = async () => {
     try {
       setIsLoading(true);
+      setError(null);
+      
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: {
@@ -33,10 +36,20 @@ export default function SpinnerItem({ spinner, isSold }: SpinnerProps) {
         }),
       });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create checkout session');
+      }
+
       const { url } = await response.json();
+      if (!url) {
+        throw new Error('No checkout URL returned');
+      }
+
       window.location.href = url;
     } catch (error) {
       console.error('Error creating checkout session:', error);
+      setError(error instanceof Error ? error.message : 'Failed to process pre-order');
       setIsLoading(false);
     }
   };
@@ -77,6 +90,9 @@ export default function SpinnerItem({ spinner, isSold }: SpinnerProps) {
           ) : (
             <>
               <p className="text-white font-medium mb-4">${spinner.price}</p>
+              {error && (
+                <p className="text-red-500 text-sm mb-2">{error}</p>
+              )}
               <button
                 onClick={handlePreOrder}
                 disabled={isLoading}
