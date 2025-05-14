@@ -54,7 +54,7 @@ export default function Home() {
       </section>
 
       {/* Art of Precision Section */}
-      <section className="pt-[85px] pb-32 px-4 sm:px-6 lg:px-8 bg-[#1a1f24]">
+      <section className="pt-[85px] pb-16 px-4 sm:px-6 lg:px-8 bg-[#1a1f24]">
         <div className="max-w-[1000px] mx-auto">
           <ScrollReveal>
             <h2 className={`text-3xl sm:text-5xl text-center mb-8 sm:mb-16 ${playfair.className}`}>
@@ -90,7 +90,7 @@ export default function Home() {
       </section>
 
       {/* About the Creator Section */}
-      <section className="pt-[85px] pb-32 px-4 sm:px-6 lg:px-8 bg-black">
+      <section className="pt-[85px] pb-16 px-4 sm:px-6 lg:px-8 bg-black">
         <div className="max-w-[1000px] mx-auto">
           <ScrollReveal>
             <h2 className={`text-3xl sm:text-5xl text-center mb-8 sm:mb-16 ${playfair.className}`}>
@@ -136,7 +136,7 @@ export default function Home() {
       </section>
 
       {/* Materials & Craftsmanship Section */}
-      <section className="pt-[85px] pb-32 px-4 sm:px-6 lg:px-8 bg-[#1a1f24]">
+      <section className="pt-[85px] pb-16 px-4 sm:px-6 lg:px-8 bg-[#1a1f24]">
         <div className="max-w-[1000px] mx-auto">
           <ScrollReveal>
             <h2 className={`text-3xl sm:text-5xl text-center mb-8 sm:mb-16 ${playfair.className}`}>
@@ -177,7 +177,7 @@ export default function Home() {
       </section>
 
       {/* Executive Presence Section */}
-      <section className="pt-[85px] pb-32 px-4 sm:px-6 lg:px-8 bg-black">
+      <section className="pt-[85px] pb-16 px-4 sm:px-6 lg:px-8 bg-black">
         <div className="max-w-[1000px] mx-auto">
           <ScrollReveal>
             <h2 className={`text-3xl sm:text-5xl text-center mb-8 sm:mb-16 ${playfair.className}`}>
@@ -225,7 +225,7 @@ export default function Home() {
       </section>
 
       {/* Pre-order Section */}
-      <section id="pre-order" className="pt-[85px] pb-24 px-4 sm:px-6 lg:px-8 bg-black">
+      <section id="pre-order" className="pt-[85px] pb-16 px-4 sm:px-6 lg:px-8 bg-black">
         <div className="max-w-[1000px] mx-auto text-center">
           <ScrollReveal>
             <h2 className={`text-3xl sm:text-5xl text-center mb-8 sm:mb-16 ${playfair.className}`}>

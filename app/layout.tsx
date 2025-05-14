@@ -9,11 +9,14 @@ export const metadata: Metadata = {
   description: 'Limited edition collection of premium fidget spinners. Each piece is uniquely numbered and crafted with precision.',
   icons: {
     icon: [
-      { url: '/F_Coin.png', type: 'image/png' },
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-192x192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/favicon-512x512.png', sizes: '512x512', type: 'image/png' },
     ],
-    shortcut: '/F_Coin.png',
     apple: [
-      { url: '/F_Coin.png', sizes: '180x180', type: 'image/png' },
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
     ],
   },
 }
@@ -25,11 +28,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <head>
-        <link rel="icon" href="/F_Coin.png" />
-        <link rel="shortcut icon" href="/F_Coin.png" />
-        <link rel="apple-touch-icon" href="/F_Coin.png" />
-      </head>
       <body className={inter.className}>{children}</body>
     </html>
   )
