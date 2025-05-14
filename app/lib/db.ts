@@ -16,7 +16,8 @@ export async function getSoldSpinners(): Promise<string[]> {
     console.log('Fetching sold spinners from Redis');
     const soldSpinners = await redis.get<string[]>(SOLD_SPINNERS_KEY);
     console.log('Current sold spinners:', soldSpinners);
-    return soldSpinners || [];
+    // Ensure we always return an array, even if Redis returns null
+    return Array.isArray(soldSpinners) ? soldSpinners : [];
   } catch (error) {
     console.error('Error getting sold spinners:', error);
     return [];
@@ -32,7 +33,19 @@ export async function markSpinnerAsSold(spinnerNumber: string): Promise<void> {
     if (!soldSpinners.includes(spinnerNumber)) {
       const newSoldSpinners = [...soldSpinners, spinnerNumber];
       console.log('Updating Redis with new sold spinners:', newSoldSpinners);
-      await redis.set(SOLD_SPINNERS_KEY, newSoldSpinners);
+      
+      // Use transaction to ensure atomicity
+      const pipeline = redis.pipeline();
+      pipeline.del(SOLD_SPINNERS_KEY);
+      pipeline.set(SOLD_SPINNERS_KEY, newSoldSpinners);
+      await pipeline.exec();
+      
+      // Verify the update
+      const updatedSpinners = await getSoldSpinners();
+      if (!updatedSpinners.includes(spinnerNumber)) {
+        throw new Error('Failed to verify spinner was marked as sold');
+      }
+      
       console.log('Successfully marked spinner as sold:', spinnerNumber);
     } else {
       console.log('Spinner already marked as sold:', spinnerNumber);
@@ -60,14 +73,11 @@ export async function resetSoldSpinners(): Promise<void> {
   try {
     console.log('Starting reset of sold spinners list');
     
-    // First try to delete the key entirely
-    console.log('Deleting Redis key:', SOLD_SPINNERS_KEY);
-    const deleteResult = await redis.del(SOLD_SPINNERS_KEY);
-    console.log('Delete result:', deleteResult);
-    
-    // Then set it to an empty array
-    console.log('Setting empty array for sold spinners');
-    await redis.set(SOLD_SPINNERS_KEY, []);
+    // Use pipeline to ensure atomicity
+    const pipeline = redis.pipeline();
+    pipeline.del(SOLD_SPINNERS_KEY);
+    pipeline.set(SOLD_SPINNERS_KEY, []);
+    await pipeline.exec();
     
     // Verify the reset
     const soldSpinners = await getSoldSpinners();

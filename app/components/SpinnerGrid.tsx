@@ -2,7 +2,7 @@
 
 import SpinnerItem from './SpinnerItem';
 import ScrollReveal from './ScrollReveal';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { playfair } from '../fonts';
 
 const spinners = [
@@ -42,15 +42,13 @@ const POLLING_INTERVAL = 2000; // Check every 2 seconds
 
 export default function SpinnerGrid() {
   const [soldSpinners, setSoldSpinners] = useState<string[]>([]);
-  const [lastFetchTime, setLastFetchTime] = useState(Date.now());
+  const [forceUpdateKey, setForceUpdateKey] = useState(0);
 
-  const fetchSoldSpinners = async () => {
+  const fetchSoldSpinners = useCallback(async () => {
     try {
       console.log('Polling for sold spinners...');
-      // Add timestamp and random number to prevent any caching
       const timestamp = Date.now();
-      const random = Math.random();
-      const response = await fetch(`/api/sold-spinners?t=${timestamp}&r=${random}`, {
+      const response = await fetch(`/api/sold-spinners?t=${timestamp}`, {
         cache: 'no-store',
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -66,13 +64,16 @@ export default function SpinnerGrid() {
       const data = await response.json();
       console.log('Received sold spinners:', data);
       
-      // Always update the state and lastFetchTime to ensure UI reflects latest data
-      setSoldSpinners(data);
-      setLastFetchTime(Date.now());
+      // Only update state if the data has actually changed
+      if (JSON.stringify(data) !== JSON.stringify(soldSpinners)) {
+        console.log('Updating sold spinners state due to change');
+        setSoldSpinners(data);
+        setForceUpdateKey(prev => prev + 1); // Only update key when data changes
+      }
     } catch (error) {
       console.error('Error fetching sold spinners:', error);
     }
-  };
+  }, [soldSpinners]);
 
   useEffect(() => {
     console.log('Setting up polling...');
@@ -87,18 +88,13 @@ export default function SpinnerGrid() {
       console.log('Cleaning up polling interval');
       clearInterval(intervalId);
     };
-  }, []); // Empty dependency array since we don't need to recreate the interval
-
-  // Log when soldSpinners state changes
-  useEffect(() => {
-    console.log('Current sold spinners:', soldSpinners);
-  }, [soldSpinners]);
+  }, [fetchSoldSpinners]);
 
   return (
     <div className="max-w-[1000px] mx-auto">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 md:gap-8">
         {spinners.map((spinner, index) => (
-          <ScrollReveal key={`${spinner.id}-${lastFetchTime}`} delay={index * 0.1}>
+          <ScrollReveal key={`${spinner.id}-${forceUpdateKey}`} delay={index * 0.1}>
             <SpinnerItem
               spinner={spinner}
               isSold={soldSpinners.includes(spinner.number)}
