@@ -38,7 +38,7 @@ const spinners = [
   },
 ];
 
-const POLLING_INTERVAL = 2000; // Check every 2 seconds
+const POLLING_INTERVAL = 1000; // Poll every second for more responsive updates
 
 export default function SpinnerGrid() {
   const [soldSpinners, setSoldSpinners] = useState<string[]>([]);

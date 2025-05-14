@@ -9,7 +9,6 @@ const redis = new Redis({
   token: process.env.KV_REST_API_TOKEN,
 });
 
-// Update key pattern to match production
 const SOLD_SPINNER_KEY_PREFIX = 'sold-spinner:';
 
 export async function getSoldSpinners(): Promise<string[]> {
@@ -19,15 +18,17 @@ export async function getSoldSpinners(): Promise<string[]> {
     const keys = await redis.keys(`${SOLD_SPINNER_KEY_PREFIX}*`);
     console.log('Found keys:', keys);
     
-    // Extract spinner numbers from keys and verify each key exists
-    const spinnerNumbers = [];
-    for (const key of keys) {
-      const exists = await redis.exists(key);
-      if (exists === 1) { // Redis exists returns 1 if key exists, 0 if not
-        const spinnerNumber = key.replace(SOLD_SPINNER_KEY_PREFIX, '');
-        spinnerNumbers.push(spinnerNumber);
-      }
+    if (!keys.length) {
+      console.log('No sold spinners found');
+      return [];
     }
+    
+    // Extract spinner numbers from keys
+    const spinnerNumbers = keys.map(key => {
+      const number = key.replace(SOLD_SPINNER_KEY_PREFIX, '');
+      // Ensure two-digit format
+      return number.padStart(2, '0');
+    });
     
     console.log('Current sold spinners:', spinnerNumbers);
     return spinnerNumbers;
@@ -39,38 +40,36 @@ export async function getSoldSpinners(): Promise<string[]> {
 
 export async function markSpinnerAsSold(spinnerNumber: string): Promise<void> {
   try {
-    console.log('Attempting to mark spinner as sold:', spinnerNumber);
-    const key = `${SOLD_SPINNER_KEY_PREFIX}${spinnerNumber}`;
+    // Ensure two-digit format
+    const paddedNumber = spinnerNumber.padStart(2, '0');
+    console.log('Attempting to mark spinner as sold:', paddedNumber);
+    const key = `${SOLD_SPINNER_KEY_PREFIX}${paddedNumber}`;
     
     // Check if already sold
     const exists = await redis.exists(key);
     if (exists === 1) {
-      console.log('Spinner already marked as sold:', spinnerNumber);
-      return;
+      console.log('Spinner already marked as sold:', paddedNumber);
+      throw new Error('Spinner already sold');
     }
     
     // Set the key with a value of 1
     await redis.set(key, '1');
-    console.log('Successfully marked spinner as sold:', spinnerNumber);
-    
-    // Verify the update
-    const isSold = await redis.exists(key);
-    if (isSold !== 1) {
-      throw new Error('Failed to verify spinner was marked as sold');
-    }
+    console.log('Successfully marked spinner as sold:', paddedNumber);
   } catch (error) {
     console.error('Error marking spinner as sold:', error);
-    throw new Error('Failed to mark spinner as sold');
+    throw error;
   }
 }
 
 export async function isSpinnerSold(spinnerNumber: string): Promise<boolean> {
   try {
-    console.log('Checking if spinner is sold:', spinnerNumber);
-    const key = `${SOLD_SPINNER_KEY_PREFIX}${spinnerNumber}`;
+    // Ensure two-digit format
+    const paddedNumber = spinnerNumber.padStart(2, '0');
+    console.log('Checking if spinner is sold:', paddedNumber);
+    const key = `${SOLD_SPINNER_KEY_PREFIX}${paddedNumber}`;
     const exists = await redis.exists(key);
     const isSold = exists === 1;
-    console.log('Spinner sold status:', { spinnerNumber, isSold });
+    console.log('Spinner sold status:', { spinnerNumber: paddedNumber, isSold });
     return isSold;
   } catch (error) {
     console.error('Error checking if spinner is sold:', error);
@@ -91,13 +90,13 @@ export async function resetSoldSpinners(): Promise<void> {
       const pipeline = redis.pipeline();
       keys.forEach(key => pipeline.del(key));
       await pipeline.exec();
-    }
-    
-    // Verify the reset
-    const remainingKeys = await redis.keys(`${SOLD_SPINNER_KEY_PREFIX}*`);
-    if (remainingKeys.length > 0) {
-      console.error('Reset verification failed - keys still exist:', remainingKeys);
-      throw new Error('Failed to reset sold spinners - verification failed');
+      
+      // Verify the reset
+      const remainingKeys = await redis.keys(`${SOLD_SPINNER_KEY_PREFIX}*`);
+      if (remainingKeys.length > 0) {
+        console.error('Reset verification failed - keys still exist:', remainingKeys);
+        throw new Error('Failed to reset sold spinners - verification failed');
+      }
     }
     
     console.log('Successfully reset sold spinners list');
