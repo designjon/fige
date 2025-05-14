@@ -41,20 +41,32 @@ export default function SpinnerItem({ spinner, isSold: initialIsSold }: SpinnerP
         }),
       });
 
+      const data = await response.json();
+      console.log('Checkout response:', data);
+
       if (!response.ok) {
-        const errorData = await response.json();
-        if (errorData.error === 'Spinner already sold') {
+        if (data.error === 'Spinner already sold') {
+          console.log('Setting spinner as sold due to API response');
           setIsSold(true);
         }
-        throw new Error(errorData.error || 'Failed to create checkout session');
+        throw new Error(data.error || 'Failed to create checkout session');
       }
 
-      const { url } = await response.json();
-      if (!url) {
+      if (!data.url) {
         throw new Error('No checkout URL returned');
       }
 
-      window.location.href = url;
+      // Use window.location.origin to ensure we're using the correct base URL
+      const checkoutUrl = new URL(data.url);
+      if (checkoutUrl.hostname === 'fige.vercel.app') {
+        // If the URL is pointing to production, replace it with the current origin
+        const localUrl = new URL(data.url);
+        localUrl.protocol = window.location.protocol;
+        localUrl.host = window.location.host;
+        window.location.href = localUrl.toString();
+      } else {
+        window.location.href = data.url;
+      }
     } catch (error) {
       console.error('Error creating checkout session:', error);
       setError(error instanceof Error ? error.message : 'Failed to process pre-order');

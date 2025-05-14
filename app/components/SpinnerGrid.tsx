@@ -48,6 +48,7 @@ export default function SpinnerGrid() {
     try {
       console.log('Polling for sold spinners...');
       const timestamp = Date.now();
+      // Use relative URL to ensure it hits the correct environment
       const response = await fetch(`/api/sold-spinners?t=${timestamp}`, {
         cache: 'no-store',
         headers: {
@@ -58,6 +59,7 @@ export default function SpinnerGrid() {
       });
       
       if (!response.ok) {
+        console.error('Failed to fetch sold spinners:', response.status, response.statusText);
         throw new Error('Failed to fetch sold spinners');
       }
       
