@@ -9,15 +9,21 @@ const redis = new Redis({
   token: process.env.KV_REST_API_TOKEN,
 });
 
-const SOLD_SPINNERS_KEY = 'soldSpinners';
+// Update key pattern to match production
+const SOLD_SPINNER_KEY_PREFIX = 'sold-spinner:';
 
 export async function getSoldSpinners(): Promise<string[]> {
   try {
     console.log('Fetching sold spinners from Redis');
-    const soldSpinners = await redis.get<string[]>(SOLD_SPINNERS_KEY);
-    console.log('Current sold spinners:', soldSpinners);
-    // Ensure we always return an array, even if Redis returns null
-    return Array.isArray(soldSpinners) ? soldSpinners : [];
+    // Get all keys matching the pattern
+    const keys = await redis.keys(`${SOLD_SPINNER_KEY_PREFIX}*`);
+    console.log('Found keys:', keys);
+    
+    // Extract spinner numbers from keys
+    const spinnerNumbers = keys.map(key => key.replace(SOLD_SPINNER_KEY_PREFIX, ''));
+    console.log('Current sold spinners:', spinnerNumbers);
+    
+    return spinnerNumbers;
   } catch (error) {
     console.error('Error getting sold spinners:', error);
     return [];
@@ -27,28 +33,23 @@ export async function getSoldSpinners(): Promise<string[]> {
 export async function markSpinnerAsSold(spinnerNumber: string): Promise<void> {
   try {
     console.log('Attempting to mark spinner as sold:', spinnerNumber);
-    const soldSpinners = await getSoldSpinners();
-    console.log('Current sold spinners before update:', soldSpinners);
+    const key = `${SOLD_SPINNER_KEY_PREFIX}${spinnerNumber}`;
     
-    if (!soldSpinners.includes(spinnerNumber)) {
-      const newSoldSpinners = [...soldSpinners, spinnerNumber];
-      console.log('Updating Redis with new sold spinners:', newSoldSpinners);
-      
-      // Use transaction to ensure atomicity
-      const pipeline = redis.pipeline();
-      pipeline.del(SOLD_SPINNERS_KEY);
-      pipeline.set(SOLD_SPINNERS_KEY, newSoldSpinners);
-      await pipeline.exec();
-      
-      // Verify the update
-      const updatedSpinners = await getSoldSpinners();
-      if (!updatedSpinners.includes(spinnerNumber)) {
-        throw new Error('Failed to verify spinner was marked as sold');
-      }
-      
-      console.log('Successfully marked spinner as sold:', spinnerNumber);
-    } else {
+    // Check if already sold
+    const exists = await redis.exists(key);
+    if (exists) {
       console.log('Spinner already marked as sold:', spinnerNumber);
+      return;
+    }
+    
+    // Set the key with a value of 1
+    await redis.set(key, '1');
+    console.log('Successfully marked spinner as sold:', spinnerNumber);
+    
+    // Verify the update
+    const isSold = await redis.exists(key);
+    if (!isSold) {
+      throw new Error('Failed to verify spinner was marked as sold');
     }
   } catch (error) {
     console.error('Error marking spinner as sold:', error);
@@ -59,10 +60,10 @@ export async function markSpinnerAsSold(spinnerNumber: string): Promise<void> {
 export async function isSpinnerSold(spinnerNumber: string): Promise<boolean> {
   try {
     console.log('Checking if spinner is sold:', spinnerNumber);
-    const soldSpinners = await getSoldSpinners();
-    const isSold = soldSpinners.includes(spinnerNumber);
-    console.log('Spinner sold status:', { spinnerNumber, isSold });
-    return isSold;
+    const key = `${SOLD_SPINNER_KEY_PREFIX}${spinnerNumber}`;
+    const exists = await redis.exists(key);
+    console.log('Spinner sold status:', { spinnerNumber, isSold: exists === 1 });
+    return exists === 1;
   } catch (error) {
     console.error('Error checking if spinner is sold:', error);
     return false;
@@ -73,19 +74,21 @@ export async function resetSoldSpinners(): Promise<void> {
   try {
     console.log('Starting reset of sold spinners list');
     
-    // Use pipeline to ensure atomicity
-    const pipeline = redis.pipeline();
-    pipeline.del(SOLD_SPINNERS_KEY);
-    pipeline.set(SOLD_SPINNERS_KEY, []);
-    await pipeline.exec();
+    // Get all keys matching the pattern
+    const keys = await redis.keys(`${SOLD_SPINNER_KEY_PREFIX}*`);
+    console.log('Found keys to delete:', keys);
+    
+    if (keys.length > 0) {
+      // Delete all keys in a pipeline
+      const pipeline = redis.pipeline();
+      keys.forEach(key => pipeline.del(key));
+      await pipeline.exec();
+    }
     
     // Verify the reset
-    const soldSpinners = await getSoldSpinners();
-    console.log('Verification - current sold spinners after reset:', soldSpinners);
-    
-    // Double check the reset was successful
-    if (soldSpinners.length > 0) {
-      console.error('Reset verification failed - sold spinners list is not empty:', soldSpinners);
+    const remainingKeys = await redis.keys(`${SOLD_SPINNER_KEY_PREFIX}*`);
+    if (remainingKeys.length > 0) {
+      console.error('Reset verification failed - keys still exist:', remainingKeys);
       throw new Error('Failed to reset sold spinners - verification failed');
     }
     
