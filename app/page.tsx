@@ -2,9 +2,7 @@ import SpinnerGrid from './components/SpinnerGrid';
 import ScrollReveal from './components/ScrollReveal';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Playfair_Display } from 'next/font/google';
-
-const playfair = Playfair_Display({ subsets: ['latin'] });
+import { playfair } from './fonts';
 
 export default function Home() {
   return (

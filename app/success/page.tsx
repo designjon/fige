@@ -3,10 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Playfair_Display } from 'next/font/google';
+import { playfair } from '../fonts';
 import ScrollReveal from '../components/ScrollReveal';
-
-const playfair = Playfair_Display({ subsets: ['latin'] });
 
 export default function SuccessPage() {
   const searchParams = useSearchParams();

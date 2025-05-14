@@ -3,9 +3,7 @@
 import SpinnerItem from './SpinnerItem';
 import ScrollReveal from './ScrollReveal';
 import { useState, useEffect } from 'react';
-import { Playfair_Display } from 'next/font/google';
-
-const playfair = Playfair_Display({ subsets: ['latin'] });
+import { playfair } from '../fonts';
 
 const spinners = [
   {
