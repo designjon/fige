@@ -193,7 +193,7 @@ export default function Home() {
           <ScrollReveal>
             <div className="relative aspect-[16/9] w-full max-w-[800px] mx-auto overflow-hidden rounded-2xl">
               <Image
-                src="/Executive.png"
+                src="/Executive.jpg"
                 alt="Executive with Figé Spinner"
                 fill
                 className="object-cover transition-transform duration-700 hover:scale-110"
