@@ -58,11 +58,30 @@ export async function isSpinnerSold(spinnerNumber: string): Promise<boolean> {
 
 export async function resetSoldSpinners(): Promise<void> {
   try {
-    console.log('Resetting sold spinners list');
+    console.log('Starting reset of sold spinners list');
+    
+    // First try to delete the key entirely
+    console.log('Deleting Redis key:', SOLD_SPINNERS_KEY);
+    const deleteResult = await redis.del(SOLD_SPINNERS_KEY);
+    console.log('Delete result:', deleteResult);
+    
+    // Then set it to an empty array
+    console.log('Setting empty array for sold spinners');
     await redis.set(SOLD_SPINNERS_KEY, []);
+    
+    // Verify the reset
+    const soldSpinners = await getSoldSpinners();
+    console.log('Verification - current sold spinners after reset:', soldSpinners);
+    
+    // Double check the reset was successful
+    if (soldSpinners.length > 0) {
+      console.error('Reset verification failed - sold spinners list is not empty:', soldSpinners);
+      throw new Error('Failed to reset sold spinners - verification failed');
+    }
+    
     console.log('Successfully reset sold spinners list');
   } catch (error) {
     console.error('Error resetting sold spinners:', error);
-    throw new Error('Failed to reset sold spinners');
+    throw error;
   }
 } 

@@ -42,17 +42,33 @@ const POLLING_INTERVAL = 2000; // Check every 2 seconds
 
 export default function SpinnerGrid() {
   const [soldSpinners, setSoldSpinners] = useState<string[]>([]);
+  const [lastFetchTime, setLastFetchTime] = useState(Date.now());
 
   const fetchSoldSpinners = async () => {
     try {
       console.log('Polling for sold spinners...');
-      const response = await fetch('/api/sold-spinners');
+      // Add timestamp and random number to prevent any caching
+      const timestamp = Date.now();
+      const random = Math.random();
+      const response = await fetch(`/api/sold-spinners?t=${timestamp}&r=${random}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch sold spinners');
+      }
+      
       const data = await response.json();
       console.log('Received sold spinners:', data);
-      if (JSON.stringify(data) !== JSON.stringify(soldSpinners)) {
-        console.log('Updating sold spinners state');
-        setSoldSpinners(data);
-      }
+      
+      // Always update the state and lastFetchTime to ensure UI reflects latest data
+      setSoldSpinners(data);
+      setLastFetchTime(Date.now());
     } catch (error) {
       console.error('Error fetching sold spinners:', error);
     }
@@ -71,7 +87,7 @@ export default function SpinnerGrid() {
       console.log('Cleaning up polling interval');
       clearInterval(intervalId);
     };
-  }, []);
+  }, []); // Empty dependency array since we don't need to recreate the interval
 
   // Log when soldSpinners state changes
   useEffect(() => {
@@ -82,7 +98,7 @@ export default function SpinnerGrid() {
     <div className="max-w-[1000px] mx-auto">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 md:gap-8">
         {spinners.map((spinner, index) => (
-          <ScrollReveal key={spinner.id} delay={index * 0.1}>
+          <ScrollReveal key={`${spinner.id}-${lastFetchTime}`} delay={index * 0.1}>
             <SpinnerItem
               spinner={spinner}
               isSold={soldSpinners.includes(spinner.number)}
