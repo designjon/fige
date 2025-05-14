@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 interface SpinnerProps {
@@ -19,6 +19,10 @@ export default function SpinnerItem({ spinner, isSold: initialIsSold }: SpinnerP
   const [error, setError] = useState<string | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [isSold, setIsSold] = useState(initialIsSold);
+
+  useEffect(() => {
+    setIsSold(initialIsSold);
+  }, [initialIsSold]);
 
   const handlePreOrder = async () => {
     try {
