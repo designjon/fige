@@ -29,7 +29,12 @@ export default function SpinnerItem({ spinner, isSold: initialIsSold }: SpinnerP
       setIsLoading(true);
       setError(null);
       
-      const response = await fetch('/api/checkout', {
+      const baseUrl = window.location.origin;
+      const checkoutUrl = new URL('/api/checkout', baseUrl);
+      
+      console.log('Making checkout request to:', checkoutUrl.toString());
+      
+      const response = await fetch(checkoutUrl.toString(), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -57,8 +62,8 @@ export default function SpinnerItem({ spinner, isSold: initialIsSold }: SpinnerP
       }
 
       // Use window.location.origin to ensure we're using the correct base URL
-      const checkoutUrl = new URL(data.url);
-      if (checkoutUrl.hostname === 'fige.vercel.app') {
+      const stripeUrl = new URL(data.url);
+      if (stripeUrl.hostname === 'fige.vercel.app') {
         // If the URL is pointing to production, replace it with the current origin
         const localUrl = new URL(data.url);
         localUrl.protocol = window.location.protocol;

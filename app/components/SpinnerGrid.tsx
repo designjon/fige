@@ -48,8 +48,15 @@ export default function SpinnerGrid() {
     try {
       console.log('Polling for sold spinners...');
       const timestamp = Date.now();
-      // Use relative URL to ensure it hits the correct environment
-      const response = await fetch(`/api/sold-spinners?t=${timestamp}`, {
+      
+      // Construct the URL using window.location to ensure correct protocol and host
+      const baseUrl = window.location.origin;
+      const url = new URL('/api/sold-spinners', baseUrl);
+      url.searchParams.set('t', timestamp.toString());
+      
+      console.log('Fetching from URL:', url.toString());
+      
+      const response = await fetch(url.toString(), {
         cache: 'no-store',
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -59,7 +66,11 @@ export default function SpinnerGrid() {
       });
       
       if (!response.ok) {
-        console.error('Failed to fetch sold spinners:', response.status, response.statusText);
+        console.error('Failed to fetch sold spinners:', {
+          status: response.status,
+          statusText: response.statusText,
+          url: response.url
+        });
         throw new Error('Failed to fetch sold spinners');
       }
       
@@ -78,7 +89,11 @@ export default function SpinnerGrid() {
   }, [soldSpinners]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     console.log('Setting up polling...');
+    console.log('Current origin:', window.location.origin);
+    
     // Initial fetch
     fetchSoldSpinners();
 
