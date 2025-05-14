@@ -114,7 +114,7 @@ export default function Home() {
             <div className="md:col-span-7">
               <ScrollReveal>
                 <div className="flex flex-col gap-6 py-4">
-                  <h3 className="text-2xl sm:text-3xl font-medium">
+                  <h3 className="text-xl sm:text-3xl font-medium">
                     Crafted by a Design Executive
                   </h3>
                   <p className="text-base sm:text-lg text-gray-300 leading-relaxed">
@@ -147,7 +147,7 @@ export default function Home() {
             <div className="md:col-span-7">
               <ScrollReveal>
                 <div className="flex flex-col gap-6 py-4">
-                  <p className="text-2xl sm:text-3xl font-medium text-gray-300 leading-relaxed">
+                  <p className="text-xl sm:text-3xl font-medium text-gray-300 leading-relaxed">
                     Every detail matters.
                   </p>
                   <p className="text-base sm:text-lg text-gray-300 leading-relaxed">
