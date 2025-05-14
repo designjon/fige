@@ -36,10 +36,31 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check current state before marking as sold
-    const currentSoldSpinners = await getSoldSpinners();
-    console.log('Current sold spinners before update:', currentSoldSpinners);
+    // Check if payment was successful
+    if (session.payment_status !== 'paid') {
+      console.error('Payment not completed:', session.payment_status);
+      return NextResponse.json(
+        { error: 'Payment not completed' },
+        { status: 400 }
+      );
+    }
 
+    // Check current state
+    const currentSoldSpinners = await getSoldSpinners();
+    console.log('Current sold spinners:', currentSoldSpinners);
+
+    // If the spinner is already marked as sold, and this was a successful payment,
+    // we can assume it was marked as sold by this same purchase
+    if (currentSoldSpinners.includes(spinnerNumber)) {
+      console.log('Spinner already marked as sold (expected):', spinnerNumber);
+      return NextResponse.json({ 
+        spinnerNumber,
+        email: customerEmail,
+        success: true
+      });
+    }
+
+    // If not already sold, mark it as sold
     console.log('Marking spinner as sold:', spinnerNumber);
     await markSpinnerAsSold(spinnerNumber);
 
