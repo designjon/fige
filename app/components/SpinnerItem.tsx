@@ -14,10 +14,11 @@ interface SpinnerProps {
   isSold: boolean;
 }
 
-export default function SpinnerItem({ spinner, isSold }: SpinnerProps) {
+export default function SpinnerItem({ spinner, isSold: initialIsSold }: SpinnerProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [isSold, setIsSold] = useState(initialIsSold);
 
   const handlePreOrder = async () => {
     try {
@@ -38,6 +39,9 @@ export default function SpinnerItem({ spinner, isSold }: SpinnerProps) {
 
       if (!response.ok) {
         const errorData = await response.json();
+        if (errorData.error === 'Spinner already sold') {
+          setIsSold(true);
+        }
         throw new Error(errorData.error || 'Failed to create checkout session');
       }
 
@@ -90,7 +94,7 @@ export default function SpinnerItem({ spinner, isSold }: SpinnerProps) {
           ) : (
             <>
               <p className="text-white font-medium mb-4">${spinner.price}</p>
-              {error && (
+              {error && !isSold && (
                 <p className="text-red-500 text-sm mb-2">{error}</p>
               )}
               <button
