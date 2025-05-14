@@ -13,7 +13,9 @@ const SOLD_SPINNERS_KEY = 'soldSpinners';
 
 export async function getSoldSpinners(): Promise<string[]> {
   try {
+    console.log('Fetching sold spinners from Redis');
     const soldSpinners = await redis.get<string[]>(SOLD_SPINNERS_KEY);
+    console.log('Current sold spinners:', soldSpinners);
     return soldSpinners || [];
   } catch (error) {
     console.error('Error getting sold spinners:', error);
@@ -23,9 +25,17 @@ export async function getSoldSpinners(): Promise<string[]> {
 
 export async function markSpinnerAsSold(spinnerNumber: string): Promise<void> {
   try {
+    console.log('Attempting to mark spinner as sold:', spinnerNumber);
     const soldSpinners = await getSoldSpinners();
+    console.log('Current sold spinners before update:', soldSpinners);
+    
     if (!soldSpinners.includes(spinnerNumber)) {
-      await redis.set(SOLD_SPINNERS_KEY, [...soldSpinners, spinnerNumber]);
+      const newSoldSpinners = [...soldSpinners, spinnerNumber];
+      console.log('Updating Redis with new sold spinners:', newSoldSpinners);
+      await redis.set(SOLD_SPINNERS_KEY, newSoldSpinners);
+      console.log('Successfully marked spinner as sold:', spinnerNumber);
+    } else {
+      console.log('Spinner already marked as sold:', spinnerNumber);
     }
   } catch (error) {
     console.error('Error marking spinner as sold:', error);
@@ -34,6 +44,14 @@ export async function markSpinnerAsSold(spinnerNumber: string): Promise<void> {
 }
 
 export async function isSpinnerSold(spinnerNumber: string): Promise<boolean> {
-  const soldSpinners = await getSoldSpinners();
-  return soldSpinners.includes(spinnerNumber);
+  try {
+    console.log('Checking if spinner is sold:', spinnerNumber);
+    const soldSpinners = await getSoldSpinners();
+    const isSold = soldSpinners.includes(spinnerNumber);
+    console.log('Spinner sold status:', { spinnerNumber, isSold });
+    return isSold;
+  } catch (error) {
+    console.error('Error checking if spinner is sold:', error);
+    return false;
+  }
 } 
