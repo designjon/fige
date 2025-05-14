@@ -54,4 +54,15 @@ export async function isSpinnerSold(spinnerNumber: string): Promise<boolean> {
     console.error('Error checking if spinner is sold:', error);
     return false;
   }
+}
+
+export async function resetSoldSpinners(): Promise<void> {
+  try {
+    console.log('Resetting sold spinners list');
+    await redis.set(SOLD_SPINNERS_KEY, []);
+    console.log('Successfully reset sold spinners list');
+  } catch (error) {
+    console.error('Error resetting sold spinners:', error);
+    throw new Error('Failed to reset sold spinners');
+  }
 } 
