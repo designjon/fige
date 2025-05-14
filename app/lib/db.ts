@@ -19,10 +19,17 @@ export async function getSoldSpinners(): Promise<string[]> {
     const keys = await redis.keys(`${SOLD_SPINNER_KEY_PREFIX}*`);
     console.log('Found keys:', keys);
     
-    // Extract spinner numbers from keys
-    const spinnerNumbers = keys.map(key => key.replace(SOLD_SPINNER_KEY_PREFIX, ''));
-    console.log('Current sold spinners:', spinnerNumbers);
+    // Extract spinner numbers from keys and verify each key exists
+    const spinnerNumbers = [];
+    for (const key of keys) {
+      const exists = await redis.exists(key);
+      if (exists) {
+        const spinnerNumber = key.replace(SOLD_SPINNER_KEY_PREFIX, '');
+        spinnerNumbers.push(spinnerNumber);
+      }
+    }
     
+    console.log('Current sold spinners:', spinnerNumbers);
     return spinnerNumbers;
   } catch (error) {
     console.error('Error getting sold spinners:', error);
