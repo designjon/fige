@@ -38,22 +38,28 @@ const spinners = [
   },
 ];
 
-const POLLING_INTERVAL = 5000; // Check every 5 seconds
+const POLLING_INTERVAL = 2000; // Check every 2 seconds
 
 export default function SpinnerGrid() {
   const [soldSpinners, setSoldSpinners] = useState<string[]>([]);
 
   const fetchSoldSpinners = async () => {
     try {
+      console.log('Polling for sold spinners...');
       const response = await fetch('/api/sold-spinners');
       const data = await response.json();
-      setSoldSpinners(data);
+      console.log('Received sold spinners:', data);
+      if (JSON.stringify(data) !== JSON.stringify(soldSpinners)) {
+        console.log('Updating sold spinners state');
+        setSoldSpinners(data);
+      }
     } catch (error) {
       console.error('Error fetching sold spinners:', error);
     }
   };
 
   useEffect(() => {
+    console.log('Setting up polling...');
     // Initial fetch
     fetchSoldSpinners();
 
@@ -61,8 +67,16 @@ export default function SpinnerGrid() {
     const intervalId = setInterval(fetchSoldSpinners, POLLING_INTERVAL);
 
     // Cleanup interval on unmount
-    return () => clearInterval(intervalId);
+    return () => {
+      console.log('Cleaning up polling interval');
+      clearInterval(intervalId);
+    };
   }, []);
+
+  // Log when soldSpinners state changes
+  useEffect(() => {
+    console.log('Current sold spinners:', soldSpinners);
+  }, [soldSpinners]);
 
   return (
     <div className="max-w-[1000px] mx-auto">
