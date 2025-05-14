@@ -19,6 +19,15 @@ export async function POST(request: Request) {
     
     const { spinnerId, spinnerNumber, price } = body;
 
+    // Validate price
+    if (!price || isNaN(price) || price <= 0) {
+      console.error('Invalid price:', price);
+      return NextResponse.json(
+        { error: 'Invalid price' },
+        { status: 400 }
+      );
+    }
+
     console.log('Environment variables:', {
       NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
       NODE_ENV: process.env.NODE_ENV,
@@ -43,7 +52,10 @@ export async function POST(request: Request) {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL.replace(/\/$/, '');
     console.log('Base URL:', baseUrl);
 
-    console.log('Creating Stripe checkout session');
+    // Ensure price is a valid integer for Stripe (in cents)
+    const unitAmount = Math.round(price * 100);
+    console.log('Creating Stripe checkout session with unit amount:', unitAmount);
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -54,7 +66,7 @@ export async function POST(request: Request) {
               name: `Figé Spinner #${spinnerNumber}`,
               description: 'Limited Edition Figé Spinner',
             },
-            unit_amount: price * 100,
+            unit_amount: unitAmount,
           },
           quantity: 1,
         },
