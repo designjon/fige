@@ -12,9 +12,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 // Server-side trusted product catalog
 const PRODUCT_CATALOG: Record<string, { name: string; price: number }> = {
-  '01': { name: 'Figé Spinner #01', price: 49900 },
-  '02': { name: 'Figé Spinner #02', price: 49900 },
-  '03': { name: 'Figé Spinner #03', price: 49900 },
+  '01': { name: 'Figé Spinner #01', price: 79900 },
+  '02': { name: 'Figé Spinner #02', price: 69900 },
+  '03': { name: 'Figé Spinner #03', price: 59900 },
   '04': { name: 'Figé Spinner #04', price: 49900 },
   '05': { name: 'Figé Spinner #05', price: 49900 },
 };
