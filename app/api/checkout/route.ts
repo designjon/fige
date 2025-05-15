@@ -10,6 +10,15 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2023-10-16' as any,
 });
 
+// Server-side trusted product catalog
+const PRODUCT_CATALOG: Record<string, { name: string; price: number }> = {
+  '01': { name: 'Figé Spinner #01', price: 49900 },
+  '02': { name: 'Figé Spinner #02', price: 49900 },
+  '03': { name: 'Figé Spinner #03', price: 49900 },
+  '04': { name: 'Figé Spinner #04', price: 49900 },
+  '05': { name: 'Figé Spinner #05', price: 49900 },
+};
+
 export async function POST(request: Request) {
   try {
     console.log('Received checkout request');
@@ -17,16 +26,18 @@ export async function POST(request: Request) {
     const body = await request.json();
     console.log('Request body:', body);
     
-    const { spinnerId, spinnerNumber, price } = body;
+    const { spinnerId, spinnerNumber } = body;
 
-    // Validate price
-    if (!price || isNaN(price) || price <= 0) {
-      console.error('Invalid price:', price);
+    // Validate spinnerNumber
+    if (!spinnerNumber || !PRODUCT_CATALOG[spinnerNumber]) {
+      console.error('Invalid spinner number:', spinnerNumber);
       return NextResponse.json(
-        { error: 'Invalid price' },
+        { error: 'Invalid spinner number' },
         { status: 400 }
       );
     }
+
+    const product = PRODUCT_CATALOG[spinnerNumber];
 
     console.log('Environment variables:', {
       NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
@@ -52,8 +63,8 @@ export async function POST(request: Request) {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL.replace(/\/$/, '');
     console.log('Base URL:', baseUrl);
 
-    // Ensure price is a valid integer for Stripe (in cents)
-    const unitAmount = Math.round(price * 100);
+    // Use the trusted price from the server-side catalog
+    const unitAmount = product.price;
     console.log('Creating Stripe checkout session with unit amount:', unitAmount);
 
     const session = await stripe.checkout.sessions.create({
@@ -63,7 +74,7 @@ export async function POST(request: Request) {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: `Figé Spinner #${spinnerNumber}`,
+              name: product.name,
               description: 'Limited Edition Figé Spinner',
             },
             unit_amount: unitAmount,
